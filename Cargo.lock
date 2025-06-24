@@ -9,6 +9,8 @@ dependencies = [
  "actix-web",
  "dotenv",
  "env_logger",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
