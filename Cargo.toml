@@ -2,5 +2,49 @@
 name = "ActixUdemy"
 version = "0.1.0"
 edition = "2024"
+license = "MIT"
+rust-version = "1.87"
+repository = "https://github.com/shubhenduanupamdutta/AxumYouTube"
+publish = false
+authors = ["Shubhendu Anupam Dutta <shubhenduanupam@gmail.com>"]
+
+[lints.rust]
+nonstandard_style = { level = "deny", priority = -1 }
+future_incompatible = { level = "deny", priority = -1 }
+rust_2021_compatibility = { level = "deny", priority = -1 }
+# missing_copy_implementation = "deny"
+unsafe_code = "deny"
+# missing_docs = "deny"
+non_ascii_idents = "deny"
+deprecated = "deny"
+deprecated_in_future = "deny"
+unreachable_code = "deny"
+unreachable_patterns = "deny"
+unreachable_pub = "deny"
+missing_debug_implementations = "deny"
+trivial_casts = "deny"
+trivial_numeric_casts = "deny"
+unused_qualifications = "warn"
+unused_import_braces = "warn"
+unused_imports = "warn"
+
+[lints.clippy]
+all = "deny"
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+codegen-units = 1
+lto = true
+panic = "abort"
+incremental = true
+opt-level = 3
+strip = true
+rpath = false
+debug = false
+debug-assertions = false
+overflow-checks = false
 
 [dependencies]
+actix-web = "4.11.0"
