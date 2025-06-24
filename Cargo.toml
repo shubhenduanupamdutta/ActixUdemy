@@ -48,3 +48,5 @@ overflow-checks = false
 
 [dependencies]
 actix-web = "4.11.0"
+dotenv = "0.15.0"
+env_logger = "0.11.8"
