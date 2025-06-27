@@ -118,3 +118,15 @@ async fn insert_user(app_data: web::Data<AppState>, new_user: Json<NewUser>) -> 
     users.last().unwrap().id.to_string()
 }
 ```
+
+### `FromRequest` trait
+
+Those built in capabilities of extractors to take input in raw format and convert it into Rust types, are based on the implementation of `FromRequest` trait. So any custom extractors we need to create must also implement this trait.
+
+---
+
+## Responders
+
+Taking static Rust types and convert them to a format which we can send to client.
+`Responder` is a trait that has capability and methods of converting from rust type to an output type.
+We can use any type that implements this trait, like `HttpResponse`, `Json<T>` and and Custom Type which has `Responder` trait, can be used as a response (output from a route).
