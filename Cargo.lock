@@ -3,18 +3,6 @@
 version = 4
 
 [[package]]
-name = "ActixUdemy"
-version = "0.1.0"
-dependencies = [
- "actix-web",
- "dotenv",
- "env_logger",
- "serde",
- "serde_json",
- "thiserror",
-]
-
-[[package]]
 name = "actix-codec"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -130,6 +118,18 @@ checksum = "9e46f36bf0e5af44bdc4bdb36fbbd421aa98c79a9bce724e1edeb3894e10dc7f"
 dependencies = [
  "futures-core",
  "pin-project-lite",
+]
+
+[[package]]
+name = "actix-udemy"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "dotenv",
+ "env_logger",
+ "serde",
+ "serde_json",
+ "thiserror",
 ]
 
 [[package]]
