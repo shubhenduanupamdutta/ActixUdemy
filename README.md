@@ -196,3 +196,76 @@ async fn get_user_name(
     }
 }
 ```
+
+## `sqlx` crate
+
+### Building a container with postgres
+
+// docker-compose.yaml
+
+```yaml
+version: "3.8"
+
+services:
+  db:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: tester
+      POSTGRES_USER: tester
+      POSTGRES_DB: tester
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+```
+
+Then in the folder run
+
+```bash
+docker compose up -d --build
+```
+
+### Add sqlx dependencies
+
+```toml
+sqlx = { version = "0.8.6", features = [
+    "postgres",
+    "runtime-tokio",
+    "tls-native-tls",
+    "chrono",
+] }
+thiserror = "2.0.12"
+tokio = { version = "1.45.1", features = ["full"] }
+```
+
+### Install sqlx-cli
+
+```bash
+cargo install sqlx-cli
+```
+
+### Workflow
+
+#### First create the database
+
+```bash
+sqlx database create --database-url postgres://tester:tester@localhost:5432/tester
+```
+
+#### Test that database is created
+
+```bash
+psql -h localhost -p 5432 -d tester -U tester
+```
+
+#### Creating a new migration file (empty)
+
+```bash
+sqlx migrate add profile_table
+```
+
+#### Running the migration
+
+```bash
+sqlx migrate run --database-url postgres://tester:tester@localhost:5432/tester
+```
