@@ -14,22 +14,22 @@ pub async fn example() {
         .await
         .unwrap();
 
-    let result = query_as::<_, Profile>("select * from profile where id = $1")
-        .bind(2)
-        .fetch_one(&conn)
-        .await;
-    println!("Get statement result: {:?}", result.unwrap());
+    // let result = query_as::<_, Profile>("select * from profile where id = $1")
+    //     .bind(2)
+    //     .fetch_one(&conn)
+    //     .await;
+    // println!("Get statement result: {:?}", result.unwrap());
 
-    // Insert statement
-    let id = query_as::<_, EntityId>(
-        "insert into message (user_id, body, likes) values ($1, $2, $3) returning id",
-    )
-    .bind(2)
-    .bind("Hello World!")
-    .bind(10)
-    .fetch_one(&conn)
-    .await;
-    println!("Insert statement result: {:?}", id);
+    // // Insert statement
+    // let id = query_as::<_, EntityId>(
+    //     "insert into message (user_id, body, likes) values ($1, $2, $3) returning id",
+    // )
+    // .bind(2)
+    // .bind("Hello World!")
+    // .bind(10)
+    // .fetch_one(&conn)
+    // .await;
+    // println!("Insert statement result: {:?}", id);
 
     // A transaction
     let mut tx = conn.begin().await.unwrap();
