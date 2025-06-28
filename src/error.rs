@@ -11,10 +11,11 @@ use tracing::error;
 pub enum ServerSideError {
     #[error("Unknown Internal Server Error: {0}")]
     InternalServerError(String),
+    #[error("Serialization Error: {0}")]
+    SerializationError(#[from] serde_json::Error),
 }
 
 #[derive(Debug, Serialize, thiserror::Error)]
-#[serde()]
 pub enum ClientSideError {
     #[error("Internal Server Error")]
     InternalServerError,
@@ -26,7 +27,9 @@ impl From<ServerSideError> for ClientSideError {
         error!(error_id = %error_id, error = %value);
 
         match value {
-            ServerSideError::InternalServerError(_) => ClientSideError::InternalServerError,
+            ServerSideError::InternalServerError(_) | ServerSideError::SerializationError(_) => {
+                ClientSideError::InternalServerError
+            },
         }
     }
 }
@@ -47,3 +50,13 @@ impl ResponseError for ClientSideError {
 }
 
 pub type Result<T> = std::result::Result<T, ClientSideError>;
+
+pub trait IntoClientResult<T> {
+    fn into_client_result(self) -> Result<T>;
+}
+
+impl<T> IntoClientResult<T> for std::result::Result<T, ServerSideError> {
+    fn into_client_result(self) -> Result<T> {
+        self.map_err(ClientSideError::from)
+    }
+}

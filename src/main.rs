@@ -1,5 +1,6 @@
 pub mod error;
 pub mod tracing_config;
+pub mod utility;
 
 use std::sync::RwLock;
 
