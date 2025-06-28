@@ -1,4 +1,4 @@
-use crate::error::{IntoClientResult as _, Result, ServerSideError};
+use crate::error::{IntoClientResult as _, ServerSideError};
 use actix_web::{
     body::BoxBody,
     http::{header::ContentType, StatusCode},
@@ -25,7 +25,6 @@ impl<T: Serialize> ApiResponse<T> {
     pub(crate) fn created(data: T) -> Self {
         ApiResponse { status_code: StatusCode::CREATED, data }
     }
-
 }
 
 #[allow(unused_variables)]
@@ -33,10 +32,10 @@ impl<T: Serialize> Responder for ApiResponse<T> {
     type Body = BoxBody;
 
     fn respond_to(self, req: &actix_web::HttpRequest) -> HttpResponse<Self::Body> {
-        let output = serde_json::to_string(&self.data)
+        let output = serde_json::to_value(&self.data)
             .map_err(ServerSideError::from)
             .into_client_result();
-        
+
         match output {
             Ok(value) => HttpResponse::build(self.status_code)
                 .content_type(ContentType::json())

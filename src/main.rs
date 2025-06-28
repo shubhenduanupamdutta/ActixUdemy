@@ -2,22 +2,27 @@ pub mod error;
 pub mod tracing_config;
 pub mod utility;
 
+use error::Result;
+use serde_json::{json, Value};
 use std::sync::RwLock;
 
 use actix_web::{
-    web::{self, Json, Path},
-    App, HttpServer,
+    http::StatusCode,
+    web::{self, Json, Path, Redirect},
+    App, Either, HttpServer, Responder,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use tracing::info;
 use tracing_actix_web::TracingLogger;
+
+use crate::{error::ServerSideError, utility::api_response::ApiResponse};
 
 #[derive(Deserialize)]
 struct EntityId {
     id: i64,
 }
 
-#[allow(dead_code)]
+#[derive(Clone, Serialize)]
 struct FinalUser {
     id: i64,
     user_name: String,
@@ -72,20 +77,28 @@ async fn main() -> std::io::Result<()> {
                     .service(web::resource("/user/{id}").route(web::get().to(get_user_name)))
                     .service(web::resource("/user").route(web::post().to(insert_user))),
             )
+            .service(web::resource("/na").route(web::get().to(failure_message)))
     })
     .bind(("127.0.0.1", 8080))?
     .run()
     .await
 }
 
-async fn get_user_name(app_data: web::Data<AppState>, params: Path<EntityId>) -> String {
+async fn get_user_name(
+    app_data: web::Data<AppState>,
+    params: Path<EntityId>,
+) -> Either<Result<impl Responder>, Result<ApiResponse<FinalUser>>> {
     let users = app_data.users.read().unwrap();
-    users
-        .iter()
-        .find(|user| user.id == params.id)
-        .unwrap()
-        .user_name
-        .clone()
+    let user = users.iter().find(|user| user.id == params.id);
+
+    match user {
+        Some(user) if user.id != 3 => Either::Left(Ok(Redirect::new("/", "../../na"))),
+        Some(user) => Either::Right(Ok(ApiResponse::ok(user.clone()))),
+        None => Either::Right(Err(ServerSideError::InternalServerError(
+            "Internal Server Error".to_string(),
+        )
+        .into())),
+    }
 }
 
 async fn insert_user(app_data: web::Data<AppState>, new_user: Json<NewUser>) -> String {
@@ -98,4 +111,12 @@ async fn insert_user(app_data: web::Data<AppState>, new_user: Json<NewUser>) -> 
     });
 
     users.last().unwrap().id.to_string()
+}
+
+async fn failure_message() -> ApiResponse<Value> {
+    let value = json!({
+        "error": "Some unknown error has occurred."
+    });
+
+    ApiResponse::new(StatusCode::INTERNAL_SERVER_ERROR, value)
 }

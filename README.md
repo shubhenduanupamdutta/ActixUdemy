@@ -130,3 +130,69 @@ Those built in capabilities of extractors to take input in raw format and conver
 Taking static Rust types and convert them to a format which we can send to client.
 `Responder` is a trait that has capability and methods of converting from rust type to an output type.
 We can use any type that implements this trait, like `HttpResponse`, `Json<T>` and and Custom Type which has `Responder` trait, can be used as a response (output from a route).
+
+## Using `Either` to redirect if needed
+
+```rust
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    // Initializing dotenv to load environment variables
+    dotenv::dotenv().ok();
+
+    let _guards = tracing_config::init_tracing();
+
+    let app_data = web::Data::new(AppState {
+        users: RwLock::new(vec![
+            FinalUser {
+                id: 1,
+                user_name: "dave".to_string(),
+                full_name: "Dave Choi".to_string(),
+            },
+            FinalUser {
+                id: 2,
+                user_name: "linda".to_string(),
+                full_name: "John Strong".to_string(),
+            },
+            FinalUser {
+                id: 3,
+                user_name: "john".to_string(),
+                full_name: "John Strong".to_string(),
+            },
+        ]),
+    });
+
+    info!("Starting Actix Web Server...");
+
+    HttpServer::new(move || {
+        App::new()
+            .app_data(app_data.clone())
+            .wrap(TracingLogger::default())
+            .service(
+                web::scope("/v1")
+                    .service(web::resource("/user/{id}").route(web::get().to(get_user_name)))
+                    .service(web::resource("/user").route(web::post().to(insert_user))),
+            )
+            .service(web::resource("/na").route(web::get().to(failure_message)))
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
+}
+
+async fn get_user_name(
+    app_data: web::Data<AppState>,
+    params: Path<EntityId>,
+) -> Either<Result<impl Responder>, Result<ApiResponse<FinalUser>>> {
+    let users = app_data.users.read().unwrap();
+    let user = users.iter().find(|user| user.id == params.id);
+
+    match user {
+        Some(user) if user.id != 3 => Either::Left(Ok(Redirect::new("/", "../../na"))),
+        Some(user) => Either::Right(Ok(ApiResponse::ok(user.clone()))),
+        None => Either::Right(Err(ServerSideError::InternalServerError(
+            "Internal Server Error".to_string(),
+        )
+        .into())),
+    }
+}
+```
