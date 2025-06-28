@@ -5,3 +5,6 @@
 
 # Log folder and files
 logs/
+
+# Database
+postgres/
