@@ -1,11 +1,14 @@
+pub mod error;
+pub mod tracing_config;
+
 use std::sync::RwLock;
 
 use actix_web::{
-    middleware::Logger,
-    web::{self, Json, Path},
-    App, HttpServer,
+    web::{self, Json, Path}, App, HttpServer
 };
 use serde::Deserialize;
+use tracing::info;
+use tracing_actix_web::TracingLogger;
 
 #[derive(Deserialize)]
 struct EntityId {
@@ -34,8 +37,7 @@ async fn main() -> std::io::Result<()> {
     // Initializing dotenv to load environment variables
     dotenv::dotenv().ok();
 
-    // Initializing logger for logging
-    env_logger::init();
+    let _guards = tracing_config::init_tracing();
 
     let app_data = web::Data::new(AppState {
         users: RwLock::new(vec![
@@ -57,10 +59,12 @@ async fn main() -> std::io::Result<()> {
         ]),
     });
 
+    info!("Starting Actix Web Server...");
+
     HttpServer::new(move || {
         App::new()
             .app_data(app_data.clone())
-            .wrap(Logger::default())
+            .wrap(TracingLogger::default())
             .service(
                 web::scope("/v1")
                     .service(web::resource("/user/{id}").route(web::get().to(get_user_name)))
