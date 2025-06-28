@@ -133,6 +133,7 @@ dependencies = [
  "tracing-actix-web",
  "tracing-appender",
  "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]

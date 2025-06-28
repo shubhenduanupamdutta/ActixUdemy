@@ -5,11 +5,12 @@ use actix_web::{
 };
 use serde::Serialize;
 use serde_json::json;
+use tracing::error;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ServerSideError {
-    #[error("Unknown Internal Server Error")]
-    InternalServerError,
+    #[error("Unknown Internal Server Error: {0}")]
+    InternalServerError(String),
 }
 
 #[derive(Debug, Serialize, thiserror::Error)]
@@ -21,9 +22,11 @@ pub enum ClientSideError {
 
 impl From<ServerSideError> for ClientSideError {
     fn from(value: ServerSideError) -> Self {
-        println!("Error: {}", value);
+        let error_id = uuid::Uuid::new_v4();
+        error!(error_id = %error_id, error = %value);
+
         match value {
-            ServerSideError::InternalServerError => ClientSideError::InternalServerError,
+            ServerSideError::InternalServerError(_) => ClientSideError::InternalServerError,
         }
     }
 }

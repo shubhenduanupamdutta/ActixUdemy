@@ -4,7 +4,8 @@ pub mod tracing_config;
 use std::sync::RwLock;
 
 use actix_web::{
-    web::{self, Json, Path}, App, HttpServer
+    web::{self, Json, Path},
+    App, HttpServer,
 };
 use serde::Deserialize;
 use tracing::info;
