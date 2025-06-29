@@ -100,11 +100,11 @@ mod private_members {
 
         match insert_msg_response_result {
             Ok(_) => {
-                _ = tx.commit().await.map_err(ServerSideError::from)?;
+                tx.commit().await.map_err(ServerSideError::from)?;
                 return Ok(msg_id);
             },
             Err(e) => {
-                _ = tx.rollback().await.map_err(ServerSideError::from)?;
+                tx.rollback().await.map_err(ServerSideError::from)?;
                 return Err(ServerSideError::from(e).into());
             },
         }
