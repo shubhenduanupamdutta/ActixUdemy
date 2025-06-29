@@ -40,3 +40,4 @@ tracing = { workspace = true }
 tracing-actix-web = { workspace = true }
 uuid = { workspace = true, features = ["v4"] }
 mockall = {workspace = true}
+reqwest = {workspace = true}

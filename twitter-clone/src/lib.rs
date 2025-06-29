@@ -1,4 +1,5 @@
 pub mod api_response;
+pub mod app_state;
 pub mod common;
 pub mod error;
 
@@ -11,6 +12,7 @@ use tracing_config::init_tracing;
 
 use crate::{
     api_response::ApiResponse,
+    common::entities::base::DbRepo,
     error::{IntoClientResult, Result, ServerSideError},
 };
 
@@ -27,9 +29,13 @@ pub async fn run() -> Result<()> {
 
     let _guard = init_tracing();
 
+    let db_repo = DbRepo::init().await;
+    let app_data = web::Data::new(app_state::AppState { client: reqwest::Client::new(), db_repo });
+
     HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
+            .app_data(app_data.clone())
             .route("/", web::get().to(get_root))
     })
     .bind((host, port))
