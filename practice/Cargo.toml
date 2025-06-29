@@ -14,6 +14,7 @@ workspace = true
 
 
 [dependencies]
+tracing-config = { path = "../tracing-config" }
 actix-web = { workspace = true }
 chrono = { workspace = true, features = ["serde"] }
 dotenv = { workspace = true }
@@ -27,9 +28,7 @@ sqlx = { workspace = true, features = [
     "chrono",
 ] }
 thiserror = { workspace = true }
-tokio = { workspace = true, features = ["full"] }
 tracing = { workspace = true }
 tracing-actix-web = { workspace = true }
-tracing-appender = { workspace = true }
-tracing-subscriber = { workspace = true, features = ["env-filter", "json"] }
+tokio = { workspace = true, features = ["full"] }
 uuid = { workspace = true, features = ["v4"] }

@@ -1,8 +1,7 @@
 [workspace]
-name = "actix-udemy"
 resolver = "3"
 members = [
-    "practice",
+    "practice", "tracing-config",
     "twitter-clone",
 ]
 

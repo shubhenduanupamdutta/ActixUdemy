@@ -1517,8 +1517,7 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-actix-web",
- "tracing-appender",
- "tracing-subscriber",
+ "tracing-config",
  "uuid",
 ]
 
@@ -2352,6 +2351,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "tracing-config"
+version = "0.1.0"
+dependencies = [
+ "tracing",
+ "tracing-appender",
+ "tracing-subscriber",
 ]
 
 [[package]]

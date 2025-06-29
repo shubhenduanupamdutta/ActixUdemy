@@ -67,6 +67,7 @@ pub async fn main() {
     }
 }
 
+#[allow(dead_code)]
 #[derive(Debug, FromRow, Deserialize)]
 struct Profile {
     pub id: i64,

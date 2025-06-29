@@ -1,10 +1,9 @@
 pub mod error;
-pub mod tracing_config;
 pub mod utility;
-
 use error::Result;
 use serde_json::{json, Value};
 use std::sync::RwLock;
+use tracing_config::init_tracing;
 
 use actix_web::{
     http::StatusCode,
@@ -44,7 +43,7 @@ async fn main() -> std::io::Result<()> {
     // Initializing dotenv to load environment variables
     dotenv::dotenv().ok();
 
-    let _guards = tracing_config::init_tracing();
+    let _guards = init_tracing();
 
     let app_data = web::Data::new(AppState {
         users: RwLock::new(vec![

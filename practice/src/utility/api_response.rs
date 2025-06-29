@@ -22,6 +22,7 @@ impl<T: Serialize> ApiResponse<T> {
         ApiResponse { status_code: StatusCode::OK, data }
     }
 
+    #[allow(dead_code)]
     pub(crate) fn created(data: T) -> Self {
         ApiResponse { status_code: StatusCode::CREATED, data }
     }
