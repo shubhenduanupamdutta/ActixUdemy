@@ -3,6 +3,8 @@ pub mod app_state;
 pub mod common;
 pub mod error;
 pub mod routes;
+pub mod schemas;
+pub mod common_tests;
 
 use std::env;
 
@@ -38,6 +40,7 @@ pub async fn run() -> Result<()> {
             .wrap(TracingLogger::default())
             .app_data(app_data.clone())
             .route("/", web::get().to(get_root))
+            .configure(routes::msg_routes::config)
     })
     .bind((host, port))
     .map_err(|err| ServerSideError::HostBindingError(err.to_string()))?

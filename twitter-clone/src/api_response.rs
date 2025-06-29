@@ -10,7 +10,7 @@ use serde::Serialize;
 pub(crate) struct ApiResponse<T: Serialize> {
     #[serde(skip_serializing)]
     status_code: StatusCode,
-    data: T,
+    pub data: T,
 }
 
 /// Implementation of helper methods for constructing `ApiResponse<T>` instances with various HTTP status codes.

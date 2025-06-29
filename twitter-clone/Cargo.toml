@@ -39,5 +39,7 @@ tokio = { workspace = true, features = ["full"] }
 tracing = { workspace = true }
 tracing-actix-web = { workspace = true }
 uuid = { workspace = true, features = ["v4"] }
-mockall = {workspace = true}
-reqwest = {workspace = true}
+mockall = { workspace = true }
+reqwest = { workspace = true }
+serde_repr = { workspace = true }
+actix-multipart = { workspace = true }
