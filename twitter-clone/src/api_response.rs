@@ -13,16 +13,30 @@ pub(crate) struct ApiResponse<T: Serialize> {
     data: T,
 }
 
+/// Implementation of helper methods for constructing `ApiResponse<T>` instances with various HTTP status codes.
+///
+/// # Methods
+///
+/// - `new(status_code: StatusCode, data: T) -> Self`  
+///   Creates a new `ApiResponse` with the specified status code and data.
+///
+/// - `ok(data: T) -> Self`  
+///   Creates a new `ApiResponse` with a 200 OK status code and the provided data.
+///
+/// - `created(data: T) -> Self`  
+///   Creates a new `ApiResponse` with a 201 Created status code and the provided data.
 impl<T: Serialize> ApiResponse<T> {
+    /// Creates a new `ApiResponse` with the specified status code and data.
     pub(crate) fn new(status_code: StatusCode, data: T) -> Self {
         ApiResponse { status_code, data }
     }
 
+    /// Creates a new `ApiResponse` with a 200 OK status code and the provided data.
     pub(crate) fn ok(data: T) -> Self {
         ApiResponse { status_code: StatusCode::OK, data }
     }
 
-    #[allow(dead_code)]
+    /// Creates a new `ApiResponse` with a 201 Created status code and the provided data.
     pub(crate) fn created(data: T) -> Self {
         ApiResponse { status_code: StatusCode::CREATED, data }
     }
