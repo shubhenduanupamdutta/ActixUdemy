@@ -19,12 +19,16 @@ pub enum ServerSideError {
     ServerRunError(String),
     #[error("Database Error: {0}")]
     DatabaseError(#[from] sqlx::Error),
+    #[error("Message Not Found: {0}")]
+    MessageNotFound(String),
 }
 
 #[derive(Debug, Serialize, thiserror::Error)]
 pub enum ClientSideError {
     #[error("Internal Server Error")]
     InternalServerError,
+    #[error("Not Found: {0}")]
+    NotFound(String),
 }
 
 impl From<ServerSideError> for ClientSideError {
@@ -38,6 +42,7 @@ impl From<ServerSideError> for ClientSideError {
             | ServerSideError::HostBindingError(_)
             | ServerSideError::ServerRunError(_)
             | ServerSideError::DatabaseError(_) => ClientSideError::InternalServerError,
+            ServerSideError::MessageNotFound(msg) => ClientSideError::NotFound(msg),
         }
     }
 }
@@ -46,6 +51,7 @@ impl ResponseError for ClientSideError {
     fn status_code(&self) -> http::StatusCode {
         match self {
             ClientSideError::InternalServerError => http::StatusCode::INTERNAL_SERVER_ERROR,
+            ClientSideError::NotFound(_) => http::StatusCode::NOT_FOUND,
         }
     }
 
