@@ -1,14 +1,22 @@
-[package]
+[workspace]
 name = "actix-udemy"
+resolver = "3"
+members = [
+    "practice",
+    "twitter-clone",
+]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
 rust-version = "1.87"
-repository = "https://github.com/shubhenduanupamdutta/AxumYouTube"
+repository = "https://github.com/shubhenduanupamdutta/ActixUdemy"
 publish = false
 authors = ["Shubhendu Anupam Dutta <shubhenduanupam@gmail.com>"]
 
-[lints.rust]
+
+[workspace.lints.rust]
 nonstandard_style = { level = "deny", priority = -1 }
 future_incompatible = { level = "deny", priority = -1 }
 rust_2021_compatibility = { level = "deny", priority = -1 }
@@ -28,7 +36,7 @@ unused_qualifications = "warn"
 unused_import_braces = "warn"
 unused_imports = "warn"
 
-[lints.clippy]
+[workspace.lints.clippy]
 all = "deny"
 
 [profile.dev.package."*"]
@@ -46,7 +54,7 @@ debug = false
 debug-assertions = false
 overflow-checks = false
 
-[dependencies]
+[workspace.dependencies]
 actix-web = "4.11.0"
 chrono = { version = "0.4.41", features = ["serde"] }
 dotenv = "0.15.0"

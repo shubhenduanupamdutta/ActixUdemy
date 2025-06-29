@@ -1,7 +1,6 @@
 pub mod error;
 pub mod tracing_config;
 pub mod utility;
-pub mod sqlx_example;
 
 use error::Result;
 use serde_json::{json, Value};
@@ -46,8 +45,6 @@ async fn main() -> std::io::Result<()> {
     dotenv::dotenv().ok();
 
     let _guards = tracing_config::init_tracing();
-
-    sqlx_example::example().await;
 
     let app_data = web::Data::new(AppState {
         users: RwLock::new(vec![

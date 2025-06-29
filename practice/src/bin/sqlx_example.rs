@@ -9,7 +9,8 @@ use fake::{
 use serde::Deserialize;
 use sqlx::{postgres, query_as, FromRow};
 
-pub async fn example() {
+#[tokio::main]
+pub async fn main() {
     let conn = postgres::PgPool::connect("postgres://tester:tester@localhost:5432/tester")
         .await
         .unwrap();
