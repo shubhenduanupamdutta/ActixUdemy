@@ -10,6 +10,7 @@ use crate::{
     schemas::message::MessagePostJson,
 };
 use actix_web::web;
+use serde_json::{json, Value};
 use std::fmt::Debug;
 use tracing::{info, instrument};
 
@@ -17,7 +18,7 @@ use tracing::{info, instrument};
 pub(crate) async fn create_message<T: Debug + InsertMessageFn>(
     app_data: web::Data<AppState<T>>,
     msg: web::Json<MessagePostJson>,
-) -> Result<ApiResponse<i64>> {
+) -> Result<ApiResponse<Value>> {
     info!("Create message handler called");
     let max_size = 281;
     let body = &msg.body[..max_size.min(msg.body.len())];
@@ -28,7 +29,11 @@ pub(crate) async fn create_message<T: Debug + InsertMessageFn>(
         .db_repo
         .insert_message(msg.user_id, body, group_type, msg.broadcasting_msg_id)
         .await?;
-    Ok(ApiResponse::created(result))
+    info!("Message created with id: {}", result);
+    Ok(ApiResponse::created(json!({
+        "message": "Message created successfully",
+        "message_id": result
+    })))
 }
 
 #[instrument(skip(app_data))]

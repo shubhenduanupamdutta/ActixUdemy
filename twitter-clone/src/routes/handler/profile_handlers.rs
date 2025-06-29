@@ -8,6 +8,7 @@ use crate::{
 };
 use actix_multipart::form::MultipartForm;
 use actix_web::web;
+use serde_json::{json, Value};
 use std::fmt::Debug;
 use std::io::Read;
 use tracing::{info, instrument};
@@ -16,14 +17,18 @@ use tracing::{info, instrument};
 pub(crate) async fn create_profile<T: Debug + InsertProfileFn>(
     app_data: web::Data<AppState<T>>,
     profile: MultipartForm<ProfileCreateMultipart>,
-) -> Result<ApiResponse<i64>> {
+) -> Result<ApiResponse<Value>> {
     info!("Create profile handler called");
 
     let result = app_data
         .db_repo
         .insert_profile(profile.into_inner().try_into()?)
         .await?;
-    Ok(ApiResponse::created(result))
+
+    Ok(ApiResponse::created(json!({
+        "message": "Profile created successfully",
+        "profile_id": result
+    })))
 }
 
 #[instrument(skip(app_data))]
