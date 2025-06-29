@@ -17,6 +17,8 @@ pub enum ServerSideError {
     HostBindingError(String),
     #[error("{0}")]
     ServerRunError(String),
+    #[error("Database Error: {0}")]
+    DatabaseError(#[from] sqlx::Error),
 }
 
 #[derive(Debug, Serialize, thiserror::Error)]
@@ -34,7 +36,8 @@ impl From<ServerSideError> for ClientSideError {
             ServerSideError::InternalServerError(_)
             | ServerSideError::SerializationError(_)
             | ServerSideError::HostBindingError(_)
-            | ServerSideError::ServerRunError(_) => ClientSideError::InternalServerError,
+            | ServerSideError::ServerRunError(_)
+            | ServerSideError::DatabaseError(_) => ClientSideError::InternalServerError,
         }
     }
 }

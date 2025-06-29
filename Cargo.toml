@@ -55,6 +55,7 @@ overflow-checks = false
 
 [workspace.dependencies]
 actix-web = "4.11.0"
+async-trait = "0.1.88"
 chrono = { version = "0.4.41", features = ["serde"] }
 dotenv = "0.15.0"
 fake = "4.3.0"
@@ -73,3 +74,4 @@ tracing-actix-web = "0.7.18"
 tracing-appender = "0.2.3"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter", "json"] }
 uuid = { version = "1.17.0", features = ["v4"] }
+mockall = "0.13.1"

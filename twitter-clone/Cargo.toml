@@ -22,6 +22,7 @@ workspace = true
 [dependencies]
 tracing-config = { path = "../tracing-config" }
 actix-web = { workspace = true }
+async-trait = { workspace = true }
 chrono = { workspace = true, features = ["serde"] }
 dotenv = { workspace = true }
 fake = { workspace = true }
@@ -38,3 +39,4 @@ tokio = { workspace = true, features = ["full"] }
 tracing = { workspace = true }
 tracing-actix-web = { workspace = true }
 uuid = { workspace = true, features = ["v4"] }
+mockall = {workspace = true}
