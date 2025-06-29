@@ -21,6 +21,10 @@ pub enum ServerSideError {
     DatabaseError(#[from] sqlx::Error),
     #[error("Message Not Found: {0}")]
     MessageNotFound(String),
+    #[error("Profile Not Found: {0}")]
+    ProfileNotFound(String),
+    #[error("File Read Error: {0}")]
+    FileReadError(String),
 }
 
 #[derive(Debug, Serialize, thiserror::Error)]
@@ -29,6 +33,8 @@ pub enum ClientSideError {
     InternalServerError,
     #[error("Not Found: {0}")]
     NotFound(String),
+    #[error("Bad Request: {0}")]
+    BadRequest(String),
 }
 
 impl From<ServerSideError> for ClientSideError {
@@ -42,7 +48,10 @@ impl From<ServerSideError> for ClientSideError {
             | ServerSideError::HostBindingError(_)
             | ServerSideError::ServerRunError(_)
             | ServerSideError::DatabaseError(_) => ClientSideError::InternalServerError,
-            ServerSideError::MessageNotFound(msg) => ClientSideError::NotFound(msg),
+            ServerSideError::MessageNotFound(msg) | ServerSideError::ProfileNotFound(msg) => {
+                ClientSideError::NotFound(msg)
+            },
+            ServerSideError::FileReadError(msg) => ClientSideError::BadRequest(msg),
         }
     }
 }
@@ -52,6 +61,7 @@ impl ResponseError for ClientSideError {
         match self {
             ClientSideError::InternalServerError => http::StatusCode::INTERNAL_SERVER_ERROR,
             ClientSideError::NotFound(_) => http::StatusCode::NOT_FOUND,
+            ClientSideError::BadRequest(_) => http::StatusCode::BAD_REQUEST,
         }
     }
 

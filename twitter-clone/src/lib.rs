@@ -41,6 +41,7 @@ pub async fn run() -> Result<()> {
             .app_data(app_data.clone())
             .route("/", web::get().to(get_root))
             .configure(routes::msg_routes::config)
+            .configure(routes::profile_routes::config)
     })
     .bind((host, port))
     .map_err(|err| ServerSideError::HostBindingError(err.to_string()))?
