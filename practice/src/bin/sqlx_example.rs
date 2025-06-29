@@ -61,7 +61,7 @@ pub async fn main() {
             _ = tx.commit().await;
         },
         Err(e) => {
-            println!("Query result after transaction Failed: {}", e.to_string());
+            println!("Query result after transaction Failed: {}", e);
             _ = tx.rollback().await;
         },
     }
