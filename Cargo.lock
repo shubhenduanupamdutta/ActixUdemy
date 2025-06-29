@@ -2429,8 +2429,7 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-actix-web",
- "tracing-appender",
- "tracing-subscriber",
+ "tracing-config",
  "uuid",
 ]
 

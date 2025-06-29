@@ -8,12 +8,19 @@ repository.workspace = true
 publish.workspace = true
 authors.workspace = true
 
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+path = "src/main.rs"
+name = "twitter-server"
 
 [lints]
 workspace = true
 
 
 [dependencies]
+tracing-config = { path = "../tracing-config" }
 actix-web = { workspace = true }
 chrono = { workspace = true, features = ["serde"] }
 dotenv = { workspace = true }
@@ -30,6 +37,4 @@ thiserror = { workspace = true }
 tokio = { workspace = true, features = ["full"] }
 tracing = { workspace = true }
 tracing-actix-web = { workspace = true }
-tracing-appender = { workspace = true }
-tracing-subscriber = { workspace = true, features = ["env-filter", "json"] }
 uuid = { workspace = true, features = ["v4"] }
