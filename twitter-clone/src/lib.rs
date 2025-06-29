@@ -1,14 +1,14 @@
 pub mod api_response;
 pub mod app_state;
 pub mod common;
+pub mod common_tests;
 pub mod error;
 pub mod routes;
 pub mod schemas;
-pub mod common_tests;
 
 use std::env;
 
-use actix_web::{web, App, HttpServer};
+use actix_web::{http::StatusCode, web, App, HttpServer};
 use serde_json::{json, Value};
 use tracing_actix_web::TracingLogger;
 use tracing_config::init_tracing;
@@ -54,5 +54,5 @@ async fn get_root() -> Result<ApiResponse<Value>> {
     let value = json!({
         "message": "Welcome to home page for twitter clone api"
     });
-    Ok(ApiResponse::ok(value))
+    Ok(ApiResponse::new(StatusCode::OK, value))
 }
